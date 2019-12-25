@@ -15,25 +15,25 @@ import (
 func pullIfNeeded(branch string) {
 	dir, err := os.Getwd()
 	if err != nil {
-		logrus.Errorf("error getting current directory: %v, err")
+		logrus.Errorf("error getting current directory: %v", err)
 	}
 	r, err := git.PlainOpen(dir)
 	if err != nil {
-		logrus.Errorf("error opening repo: %v, err")
+		logrus.Errorf("error opening repo: %v", err)
 	}
 	w, err := r.Worktree()
 	if err != nil {
-		logrus.Errorf("error getting worktree: %v, err")
+		logrus.Errorf("error getting worktree: %v", err)
 	}
 	err = w.Checkout(&git.CheckoutOptions{
 		Branch: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", branch)),
 	})
 	if err != nil {
-		logrus.Errorf("error checking out repo: %v, err")
+		logrus.Errorf("error checking out repo: %v", err)
 	}
 	err = w.Pull(&git.PullOptions{RemoteName: "origin"})
 	if err != nil {
-		logrus.Errorf("error pulling repo: %v, err")
+		logrus.Errorf("error pulling repo: %v", err)
 	}
 }
 

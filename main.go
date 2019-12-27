@@ -31,7 +31,7 @@ func pullIfNeeded(branch string) bool {
 	if err != nil {
 		logrus.Errorf("error getting current directory: %v", err)
 	}
-	r, err := git.PlainOpen(dir)
+	r, err := git.PlainOpenWithOptions(dir, &git.PlainOpenOptions{DetectDotGit: true})
 	if err != nil {
 		logrus.Errorf("error opening repo: %v", err)
 	}

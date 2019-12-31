@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"os/user"
 	"strings"
 	"time"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/alecthomas/kingpin"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
+	"gopkg.in/src-d/go-git.v4/plumbing/transport/ssh"
 )
 
 func execCmd(command string) []byte {
@@ -31,6 +33,17 @@ func pullIfNeeded(branch string) bool {
 	if err != nil {
 		logrus.Errorf("error getting current directory: %v", err)
 	}
+
+	currentUser, err := user.Current()
+	if err != nil {
+		logrus.Errorf("error getting current user: %v", err)
+	}
+
+	sshAuth, err := ssh.NewPublicKeysFromFile("git", currentUser.HomeDir+"/.ssh/id_rsa", "")
+	if err != nil {
+		logrus.Errorf("error getting public key: %v", err)
+	}
+
 	r, err := git.PlainOpenWithOptions(dir, &git.PlainOpenOptions{DetectDotGit: true})
 	if err != nil {
 		logrus.Errorf("error opening repo: %v", err)
@@ -46,7 +59,7 @@ func pullIfNeeded(branch string) bool {
 		logrus.Errorf("error checking out repo: %v", err)
 	}
 
-	err = w.Pull(&git.PullOptions{RemoteName: "origin"})
+	err = w.Pull(&git.PullOptions{RemoteName: "origin", Auth: sshAuth})
 	if err != nil {
 		logrus.Errorf("error pulling repo: %v", err)
 	}

@@ -10,6 +10,7 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/alecthomas/kingpin"
+	"github.com/davecgh/go-spew/spew"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
 	"gopkg.in/src-d/go-git.v4/plumbing/transport/ssh"
@@ -55,6 +56,8 @@ func pullIfNeeded(branch string) bool {
 	err = w.Checkout(&git.CheckoutOptions{
 		Branch: plumbing.ReferenceName(fmt.Sprintf("refs/heads/%s", branch)),
 	})
+
+	spew.Dump(w)
 	if err != nil {
 		logrus.Errorf("error checking out repo: %v", err)
 	}

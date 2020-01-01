@@ -59,7 +59,7 @@ func pullIfNeeded(branch string) bool {
 		logrus.Errorf("error checking out repo: %v", err)
 	}
 
-	err = w.Pull(&git.PullOptions{RemoteName: "origin", Auth: sshAuth})
+	err = w.Pull(&git.PullOptions{Auth: sshAuth})
 	if err != nil {
 		logrus.Errorf("error pulling repo: %v", err)
 	}
